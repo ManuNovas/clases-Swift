@@ -66,4 +66,42 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         present(optionMenu, animated: true, completion: nil)
     }
+    
+    /*func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            restaurantNames.remove(at: indexPath.row)
+            restaurantImages.remove(at: indexPath.row)
+            restaurantVisited.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            //tableView.reloadData()
+        }
+    }*/
+    
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "Borrar") {
+            (action, sourceview, completionHandler) in
+            self.restaurantNames.remove(at: indexPath.row)
+            self.restaurantImages.remove(at: indexPath.row)
+            self.restaurantVisited.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+            completionHandler(true)
+        }
+            
+        let shareAction = UIContextualAction(style: .normal, title: "Compartir") {
+            (action, sourceview, completionHandler) in
+            let texto = "Reservado en " + self.restaurantNames[indexPath.row]
+            let activityController: UIActivityViewController
+            if let imagen = UIImage(named: self.restaurantImages[indexPath.row]) {
+                activityController = UIActivityViewController(activityItems: [texto, imagen], applicationActivities: nil)
+            } else {
+                activityController = UIActivityViewController(activityItems: [texto], applicationActivities: nil)
+            }
+            
+            self.present(activityController, animated: true, completion: nil)
+        }
+            
+        let swipeConfiguration = UISwipeActionsConfiguration(actions: [deleteAction, shareAction])
+            
+        return swipeConfiguration
+    }
 }
